@@ -794,12 +794,14 @@ with col_course:
         </html>
         """
         components.html(kakao_map_html, height=300)
-        st.caption(f"🗺️ [카카오맵에서 크게 보기]({selected_course['kakao_map_url']}) | 초록선: 러닝 코스 경로")
+        _kakao_url = f"https://map.kakao.com/?map_type=TYPE_MAP&q={selected_course['start_location']}&wx={selected_course['kakao_lng']}&wy={selected_course['kakao_lat']}&zoom=4"
+        st.caption(f"🗺️ [카카오맵에서 크게 보기]({_kakao_url}) | 초록선: 러닝 코스 경로")
     else:
+        _kakao_url = f"https://map.kakao.com/?map_type=TYPE_MAP&q={selected_course['start_location']}&wx={selected_course['kakao_lng']}&wy={selected_course['kakao_lat']}&zoom=4"
         st.markdown(f"""
         <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:1.2rem;text-align:center;color:#74C69D;font-size:0.85rem;">
             🗺️ <strong>.env</strong>에 <code>KAKAO_JS_KEY</code> 입력 시 코스 지도가 표시됩니다<br>
-            <a href="{selected_course['kakao_map_url']}" target="_blank" style="color:#95D5B2;margin-top:6px;display:inline-block;">📍 카카오맵에서 보기 →</a>
+            <a href="{_kakao_url}" target="_blank" style="color:#95D5B2;margin-top:6px;display:inline-block;">📍 카카오맵에서 보기 →</a>
         </div>
         """, unsafe_allow_html=True)
 
