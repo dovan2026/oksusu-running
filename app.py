@@ -945,6 +945,9 @@ with col_rpt2:
             "pace_sec": pace_sec,
             "memo": memo,
             "run_score": ws["running_score"],
+            "runner_name": st.session_state.runner_name if "runner_name" in st.session_state else "홍길동",
+            "runner_gender": st.session_state.runner_gender if "runner_gender" in st.session_state else "남성",
+            "runner_nickname": st.session_state.runner_nickname if "runner_nickname" in st.session_state else "옥수수러너",
             **extra_settings,
         }
         
@@ -967,6 +970,17 @@ with col_rpt2:
                 mime="application/pdf",
                 use_container_width=True,
             )
+            
+            # 다운로드 버튼 밑에 프로필 입력 폼 추가
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown("##### 👤 러너 프로필 설정 (PDF 반영)")
+            col_user1, col_user2, col_user3 = st.columns(3)
+            with col_user1:
+                st.text_input("이름", value="홍길동", key="runner_name")
+            with col_user2:
+                st.selectbox("성별", ["남성", "여성", "선택 안함"], index=0, key="runner_gender")
+            with col_user3:
+                st.text_input("크루 닉네임", value="옥수수러너", key="runner_nickname")
             
             # 레포트 요약 미리보기
             st.markdown(f"""

@@ -23,8 +23,14 @@ def register_fonts():
     """시스템에 설치된 한글 폰트를 등록합니다."""
     font_registered = False
     
-    # Windows 한글 폰트 경로들
+    # 로컬 fonts 폴더 절대 경로 계산
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    local_regular = os.path.join(base_dir, "fonts", "NanumGothic.ttf")
+    local_bold = os.path.join(base_dir, "fonts", "NanumGothic-Bold.ttf")
+    
+    # Windows 한글 폰트 경로들 + 로컬 프로젝트 폰트 최우선 적용
     font_candidates = [
+        (local_regular, "NanumGothic"),
         ("C:/Windows/Fonts/malgun.ttf", "MalgunGothic"),
         ("C:/Windows/Fonts/malgunbd.ttf", "MalgunGothicBold"),
         ("C:/Windows/Fonts/NanumGothic.ttf", "NanumGothic"),
@@ -46,6 +52,7 @@ def register_fonts():
     
     # 볼드 폰트 탐색
     bold_candidates = [
+        (local_bold, "NanumGothicBold"),
         ("C:/Windows/Fonts/malgunbd.ttf", "MalgunGothicBold"),
         ("C:/Windows/Fonts/NanumGothicBold.ttf", "NanumGothicBold"),
     ]
@@ -130,6 +137,15 @@ def generate_running_report_pdf(
     c.setFillColor(COLOR_ACCENT)
     issue_date = f"발행: {datetime.now().strftime('%Y년 %m월 %d일 %H:%M')}"
     c.drawRightString(width - 15 * mm, height - 30 * mm, issue_date)
+    
+    # 러너 정보 출력
+    runner_name = running_plan.get("runner_name", "홍길동")
+    runner_gender = running_plan.get("runner_gender", "선택 안함")
+    runner_nickname = running_plan.get("runner_nickname", "옥수수러너")
+    runner_info = f"러너: {runner_name} ({runner_gender})  |  닉네임: {runner_nickname}"
+    c.setFont(bold_font, 9.5)
+    c.setFillColor(COLOR_GOLD)
+    c.drawRightString(width - 15 * mm, height - 36 * mm, runner_info)
     
     y = height - 52 * mm
     
