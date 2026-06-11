@@ -209,12 +209,10 @@ def generate_running_report_pdf(
     from config.weather_code import SKY_CODE, PTY_CODE
     if pty > 0:
         weather_label = PTY_CODE.get(pty, {}).get("label", "비")
-        weather_emoji = PTY_CODE.get(pty, {}).get("emoji", "🌧️")
     else:
         weather_label = SKY_CODE.get(sky, {}).get("label", "맑음")
-        weather_emoji = SKY_CODE.get(sky, {}).get("emoji", "☀️")
     
-    y = draw_info_row("날씨", f"{weather_emoji} {weather_label}", y)
+    y = draw_info_row("날씨", weather_label, y)
     y = draw_info_row("기온 (예보 시점)", f"{tmp}°C  (최고 {tmx}°C / 최저 {tmn}°C)", y)
     y = draw_info_row("강수 확률", f"{pop}%", y)
     y = draw_info_row("풍속", f"{wsd} m/s", y)
@@ -283,27 +281,7 @@ def generate_running_report_pdf(
     
     y -= 5 * mm
     
-    # ─── 5. 러닝 추천도 바 ───
-    run_score = running_plan.get("run_score", 80)
-    if y > 40 * mm:
-        c.setFont(bold_font, 9)
-        c.setFillColor(COLOR_TEXT)
-        c.drawString(13 * mm, y, f"🎯  오늘의 러닝 추천 지수: {run_score}/100")
-        y -= 5 * mm
-        bar_w = (width - 26 * mm) * (run_score / 100)
-        c.setFillColor(COLOR_ACCENT)
-        c.rect(13 * mm, y - 3 * mm, width - 26 * mm, 4 * mm, fill=True, stroke=False)
-        if run_score >= 80:
-            bar_color = colors.HexColor("#00C851")
-        elif run_score >= 60:
-            bar_color = colors.HexColor("#33B679")
-        elif run_score >= 40:
-            bar_color = colors.HexColor("#F9A825")
-        else:
-            bar_color = colors.HexColor("#D50000")
-        c.setFillColor(bar_color)
-        c.rect(13 * mm, y - 3 * mm, bar_w, 4 * mm, fill=True, stroke=False)
-        y -= 10 * mm
+    # (5. 오늘의 러닝 추천 지수 및 띠 그래프 영역 삭제)
     
     # ─── 하단 서명 ───
     # 구분선
