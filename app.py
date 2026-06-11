@@ -323,9 +323,20 @@ p, label {
 
 # ─────────────────────────────────────────────
 #  API 키 로드
+#  우선순위: Streamlit Cloud Secrets → .env 파일
 # ─────────────────────────────────────────────
-KMA_API_KEY = os.getenv("KMA_API_KEY", "")
-KAKAO_API_KEY = os.getenv("KAKAO_API_KEY", "")
+def _get_secret(key: str) -> str:
+    """Streamlit Secrets → .env 순서로 API 키를 읽습니다."""
+    # 1순위: Streamlit Cloud Secrets (배포 환경)
+    try:
+        return st.secrets[key]
+    except Exception:
+        pass
+    # 2순위: 로컬 .env 파일
+    return os.getenv(key, "")
+
+KMA_API_KEY = _get_secret("KMA_API_KEY")
+KAKAO_API_KEY = _get_secret("KAKAO_API_KEY")
 
 
 # ─────────────────────────────────────────────
