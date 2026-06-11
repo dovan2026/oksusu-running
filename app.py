@@ -312,6 +312,12 @@ st.markdown("""
 [data-testid="stExpander"] div[role="region"] * {
     color: #000000 !important;
 }
+[data-testid="stExpander"] .clothing-tag {
+    color: #000000 !important;
+    background-color: rgba(64,145,108,0.15) !important;
+    border: 1px solid rgba(64,145,108,0.4) !important;
+    font-weight: 600 !important;
+}
 
 /* 드롭다운 메뉴 및 달력 팝업 (흰색 배경에 검은색 글자) */
 [data-baseweb="menu"] * {
@@ -704,168 +710,27 @@ with col_course:
     </div>
     """, unsafe_allow_html=True)
     
-    # 카카오맵 JS API - 러닝 코스 폴리라인 표시
-    import streamlit.components.v1 as components
-    import json
-
-    if KAKAO_JS_KEY and KAKAO_JS_KEY != "여기에_카카오_JavaScript_키_입력":
-        route_path = selected_course.get("route_path", [])
-        center_lat = selected_course["kakao_lat"]
-        center_lng = selected_course["kakao_lng"]
-        map_level = selected_course.get("map_level", 5)
-        course_name = selected_course["name"]
-        start_location = selected_course["start_location"]
-        distance_km = selected_course["distance_km"]
-        path_json = json.dumps(route_path)
-
-        kakao_map_html = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <style>
-                * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-                body {{ background: #0D2B1A; font-family: 'Noto Sans KR', sans-serif; }}
-                #map {{ width: 100%; height: 410px; border-radius: 12px; }}
-                .map-info {{
-                    background: rgba(13,43,26,0.95);
-                    border: 1px solid #40916C;
-                    border-radius: 0 0 12px 12px;
-                    padding: 8px 12px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }}
-                .map-title {{ color: #95D5B2; font-size: 12px; font-weight: 600; }}
-                .map-dist {{ color: #D8F3DC; font-size: 12px; font-weight: 700; }}
-                .map-legend {{
-                    display: flex; align-items: center; gap: 6px;
-                    color: #74C69D; font-size: 11px;
-                }}
-                .legend-line {{
-                    width: 20px; height: 3px;
-                    background: linear-gradient(90deg, #00C851, #00FF00);
-                    border-radius: 2px;
-                }}
-            </style>
-        </head>
-        <body>
-            <div id="map"></div>
-            <div class="map-info">
-                <div>
-                    <div class="map-title">📍 {course_name}</div>
-                </div>
-                <div class="map-legend">
-                    <div class="legend-line"></div>
-                    <span>러닝 코스 (초록선)</span>
-                </div>
-                <div class="map-dist">🏃 {distance_km}km</div>
-            </div>
-            <script type="text/javascript"
-                src="//dapi.kakao.com/v2/maps/sdk.js?appkey={KAKAO_JS_KEY}&autoload=false">
-            </script>
-            <script>
-                kakao.maps.load(function() {{
-                    var routeCoords = {path_json};
-                    var mapContainer = document.getElementById('map');
-                    var mapOption = {{
-                        center: new kakao.maps.LatLng({center_lat}, {center_lng}),
-                        level: {map_level}
-                    }};
-                    var map = new kakao.maps.Map(mapContainer, mapOption);
-
-                    // 폴리라인 경로 좌표 변환
-                    var linePath = routeCoords.map(function(coord) {{
-                        return new kakao.maps.LatLng(coord[0], coord[1]);
-                    }});
-
-                    // 외곽선 (가독성 향상 - 검정 아웃라인)
-                    var polylineOuter = new kakao.maps.Polyline({{
-                        path: linePath,
-                        strokeWeight: 10,
-                        strokeColor: '#000000',
-                        strokeOpacity: 0.7,
-                        strokeStyle: 'solid'
-                    }});
-                    polylineOuter.setMap(map);
-
-                    // 러닝 코스 폴리라인 (메인 - 형광 초록선)
-                    var polyline = new kakao.maps.Polyline({{
-                        path: linePath,
-                        strokeWeight: 6,
-                        strokeColor: '#00C851',
-                        strokeOpacity: 1.0,
-                        strokeStyle: 'solid'
-                    }});
-                    polyline.setMap(map);
-
-                    // 출발점 마커
-                    if (linePath.length > 0) {{
-                        var startMarker = new kakao.maps.Marker({{
-                            position: linePath[0],
-                            map: map,
-                            title: '출발점: {start_location}'
-                        }});
-
-                        // 출발 인포윈도우
-                        var startInfo = new kakao.maps.InfoWindow({{
-                            content: '<div style="padding:5px 8px;font-size:11px;font-weight:600;color:#1B4332;white-space:nowrap;">🏁 출발 · {start_location}</div>',
-                            removable: false
-                        }});
-                        startInfo.open(map, startMarker);
-                    }}
-
-                    // 종료점 마커 (출발점과 다를 경우)
-                    if (linePath.length > 1) {{
-                        var endPos = linePath[linePath.length - 1];
-                        var endMarker = new kakao.maps.Marker({{
-                            position: endPos,
-                            map: map,
-                            title: '도착점'
-                        }});
-                    }}
-
-                    // 지도 타입 컨트롤
-                    var mapTypeControl = new kakao.maps.MapTypeControl();
-                    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
-
-                    // 줌 컨트롤
-                    var zoomControl = new kakao.maps.ZoomControl();
-                    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-                }});
-            </script>
-        </body>
-        </html>
-        """
-        components.html(kakao_map_html, height=450)
-        _kakao_url = f"https://map.kakao.com/?map_type=TYPE_MAP&q={selected_course['start_location']}&wx={selected_course['kakao_lng']}&wy={selected_course['kakao_lat']}&zoom=4"
-        st.markdown(
-            f"""
-            <div style="
-                text-shadow: 
-                    -1.5px -1.5px 0 #ffffff,  
-                     1.5px -1.5px 0 #ffffff,
-                    -1.5px  1.5px 0 #ffffff,
-                     1.5px  1.5px 0 #ffffff;
-                color: #000000;
-                font-size: 0.85rem;
-                font-weight: 700;
-                margin-top: 0.3rem;
-                margin-bottom: 0.8rem;
-            ">
-                🗺️ <a href="{_kakao_url}" target="_blank" style="color: #000000; text-decoration: underline;">카카오맵에서 출발지 위치 보기</a> | 초록선: 러닝 코스 경로 (아래 지도 참조)
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    else:
-        _kakao_url = f"https://map.kakao.com/?map_type=TYPE_MAP&q={selected_course['start_location']}&wx={selected_course['kakao_lng']}&wy={selected_course['kakao_lat']}&zoom=4"
-        st.markdown(f"""
-        <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:1.2rem;text-align:center;color:#74C69D;font-size:0.85rem;">
-            🗺️ <strong>.env</strong>에 <code>KAKAO_JS_KEY</code> 입력 시 코스 지도가 표시됩니다<br>
-            <a href="{_kakao_url}" target="_blank" style="color:#95D5B2;margin-top:6px;display:inline-block;">📍 카카오맵에서 보기 →</a>
+    _kakao_url = f"https://map.kakao.com/?map_type=TYPE_MAP&q={selected_course['start_location']}&wx={selected_course['kakao_lng']}&wy={selected_course['kakao_lat']}&zoom=4"
+    st.markdown(
+        f"""
+        <div style="
+            text-shadow: 
+                -1.5px -1.5px 0 #ffffff,  
+                 1.5px -1.5px 0 #ffffff,
+                -1.5px  1.5px 0 #ffffff,
+                 1.5px  1.5px 0 #ffffff;
+            color: #000000;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        ">
+            🗺️ <a href="{_kakao_url}" target="_blank" style="color: #000000; text-decoration: underline;">카카오맵에서 출발지 위치 보기</a>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 
 # ─────────────────────────────────────────────
