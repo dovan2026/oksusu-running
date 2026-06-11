@@ -221,45 +221,7 @@ def generate_running_report_pdf(
     y = draw_info_row("습도", f"{reh}%", y)
     y -= 3 * mm
     
-    # ─── 3. 복장 추천 ───
-    y = draw_section_title("👕  권장 러닝 복장", y, colors.HexColor("#2D6A4F"))
-    
-    category_icons = {
-        "상의": "👕", "하의": "🩳", "레이어링": "🧥",
-        "악세서리": "🧢", "신발": "👟", "특수장비": "🎒"
-    }
-    
-    for cat, items in clothing.items():
-        if cat == "tip":
-            continue
-        if not items:
-            continue
-        icon = category_icons.get(cat, "•")
-        c.setFont(bold_font, 9)
-        c.setFillColor(COLOR_PRIMARY)
-        c.drawString(13 * mm, y, f"{icon} {cat}")
-        y -= 5 * mm
-        c.setFont(main_font, 8.5)
-        c.setFillColor(COLOR_TEXT)
-        for item in items:
-            c.drawString(20 * mm, y, f"· {item}")
-            y -= 5 * mm
-        y -= 2 * mm
-    
-    # 팁
-    if "tip" in clothing and clothing["tip"]:
-        c.setFillColor(colors.HexColor("#FFF3CD"))
-        c.rect(10 * mm, y - 8 * mm, width - 20 * mm, 10 * mm, fill=True, stroke=False)
-        c.setFillColor(colors.HexColor("#856404"))
-        c.setFont(main_font, 8.5)
-        tip_text = clothing.get("tip", "")
-        c.drawString(13 * mm, y - 5 * mm, tip_text[:95])
-        if len(tip_text) > 95:
-            y -= 6 * mm
-            c.drawString(13 * mm, y - 5 * mm, tip_text[95:190])
-        y -= 14 * mm
-    
-    y -= 3 * mm
+    # (3. 권장 러닝 복장 섹션 삭제)
     
     # ─── 4. 러닝 설계 ───
     y = draw_section_title("🏃  러닝 설계", y, colors.HexColor("#1B4332"))
