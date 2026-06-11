@@ -975,7 +975,6 @@ with col_rpt2:
                     <div style="font-size:1.8rem; font-weight:900; color:#D8F3DC;">🌽 옥수수 러닝크루</div>
                     <div style="color:#95D5B2; font-size:0.85rem;">러닝 플랜 레포트</div>
                 </div>
-                
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
                     <div>
                         <div style="color:#74C69D; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;">코스</div>
@@ -1002,7 +1001,6 @@ with col_rpt2:
                         <div style="color:#D8F3DC; font-weight:700;">{duration_display}</div>
                     </div>
                 </div>
-                
                 <div style="text-align:right; margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(149,213,178,0.2);">
                     <div style="font-style:italic; font-size:1.1rem; color:#40916C; font-weight:700;">Oksusu Running Crew</div>
                     <div style="font-size:0.8rem; color:#2D6A4F;">~ 옥수수 러닝크루 ~  🌽</div>
