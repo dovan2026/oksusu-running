@@ -170,7 +170,7 @@ def generate_running_report_pdf(
     y = draw_section_title("📍  선택 코스", y)
     y = draw_info_row("코스명", course.get("name", ""), y)
     y = draw_info_row("거리", f"{course.get('distance_km', 0):.1f} km", y)
-    y = draw_info_row("난이도", course.get("difficulty", ""), y)
+    y = draw_info_row("난이도", course.get("difficulty", "").replace("⭐", "★"), y)
     y = draw_info_row("지형", course.get("terrain", ""), y)
     y = draw_info_row("출발 위치", course.get("start_location", ""), y)
     desc = course.get("description", "")
@@ -300,9 +300,9 @@ def generate_running_report_pdf(
     c.setFillColor(COLOR_PRIMARY)
     c.setFont("Helvetica-BoldOblique", 14)
     c.drawRightString(width - 13 * mm, 20 * mm, "Oksusu Running Crew")
-    c.setFont("Helvetica-Oblique", 10)
+    c.setFont(main_font, 9.5)
     c.setFillColor(COLOR_SECONDARY)
-    c.drawRightString(width - 13 * mm, 14 * mm, "~ 옥수수 러닝크루 ~  🌽")
+    c.drawRightString(width - 13 * mm, 14 * mm, "~ 옥수수 러닝크루 ~")
     
     # 서명 라인 장식
     c.setStrokeColor(COLOR_GOLD)
