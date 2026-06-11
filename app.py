@@ -267,13 +267,38 @@ st.markdown("""
 .stSelectbox > div > div {
     background: rgba(255,255,255,0.07) !important;
     border: 1px solid rgba(149,213,178,0.3) !important;
-    border-radius: 8px !important;
     color: #D8F3DC !important;
 }
 .stDateInput > div > div > input {
     background: rgba(255,255,255,0.07) !important;
     border: 1px solid rgba(149,213,178,0.3) !important;
     color: #D8F3DC !important;
+}
+
+/* 사이드바 selectbox 및 dateinput 스타일 (흰색 배경 + 검은색 글자) */
+[data-testid="stSidebar"] .stSelectbox > div > div {
+    background: #ffffff !important;
+    border: 1px solid rgba(149,213,178,0.5) !important;
+    color: #000000 !important;
+}
+[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] * {
+    color: #000000 !important;
+}
+[data-testid="stSidebar"] .stDateInput > div > div > input {
+    background: #ffffff !important;
+    border: 1px solid rgba(149,213,178,0.5) !important;
+    color: #000000 !important;
+}
+
+/* 드롭다운 메뉴 및 달력 팝업 (흰색 배경에 검은색 글자) */
+[data-baseweb="menu"] * {
+    color: #000000 !important;
+}
+[data-baseweb="popover"] * {
+    color: #000000 !important;
+}
+div[role="dialog"] * {
+    color: #000000 !important;
 }
 .stSlider [data-baseweb="slider"] {
     padding-top: 0.5rem;
@@ -795,7 +820,25 @@ with col_course:
         """
         components.html(kakao_map_html, height=300)
         _kakao_url = f"https://map.kakao.com/?map_type=TYPE_MAP&q={selected_course['start_location']}&wx={selected_course['kakao_lng']}&wy={selected_course['kakao_lat']}&zoom=4"
-        st.caption(f"🗺️ [카카오맵에서 크게 보기]({_kakao_url}) | 초록선: 러닝 코스 경로")
+        st.markdown(
+            f"""
+            <div style="
+                text-shadow: 
+                    -1.5px -1.5px 0 #ffffff,  
+                     1.5px -1.5px 0 #ffffff,
+                    -1.5px  1.5px 0 #ffffff,
+                     1.5px  1.5px 0 #ffffff;
+                color: #000000;
+                font-size: 0.85rem;
+                font-weight: 700;
+                margin-top: 0.3rem;
+                margin-bottom: 0.8rem;
+            ">
+                🗺️ <a href="{_kakao_url}" target="_blank" style="color: #000000; text-decoration: underline;">카카오맵에서 크게 보기</a> | 초록선: 러닝 코스 경로
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
     else:
         _kakao_url = f"https://map.kakao.com/?map_type=TYPE_MAP&q={selected_course['start_location']}&wx={selected_course['kakao_lng']}&wy={selected_course['kakao_lat']}&zoom=4"
         st.markdown(f"""
